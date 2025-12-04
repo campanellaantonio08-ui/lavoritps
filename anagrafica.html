@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Anagrafica</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+  }
+  .riga {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .riga p {
+    width: 80px;
+    margin: 0;
+  }
+  .riga input {
+    margin-right: 10px;
+  }
+  .output {
+    margin-left: 20px;
+    color: blue;
+  }
+</style>
+</head>
+<body>
+<h1>Anagrafica</h1>
+<div class="riga">
+  <p>Nome:</p>
+  <input type="text" id="nomeInput">
+  <p id="nomeOutput" class="output"></p>
+</div>
+<div class="riga">
+  <p>Cognome:</p>
+  <input type="text" id="cognomeInput">
+  <p id="cognomeOutput" class="output"></p>
+</div>
+<div class="riga">
+  <p>Indirizzo:</p>
+  <input type="text" id="indirizzoInput">
+  <p id="indirizzoOutput" class="output"></p>
+</div>
+<button onclick="mostraDati()">Mostra Dati</button>
+<script>
+function mostraDati() {
+  var nome = document.getElementById("nomeInput").value;
+  var cognome = document.getElementById("cognomeInput").value;
+  var indirizzo = document.getElementById("indirizzoInput").value;
+  document.getElementById("nomeOutput").innerText = nome;
+  document.getElementById("cognomeOutput").innerText = cognome;
+  document.getElementById("indirizzoOutput").innerText = indirizzo;
+}
+</script>
+</body>
+</html>
