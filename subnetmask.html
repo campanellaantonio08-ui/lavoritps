@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<head>
+  <title>Convertitore Da Decimale A Binario + Subnet Mask</title>
+  <style>
+    body {
+      background-color: #f0f8ff;
+      color: black;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start; 
+      min-height: 100vh;
+      margin: 0;
+      padding: 50px 20px 20px 20px; 
+    }
+    .rettangolo {
+      background-color: #cce7ff;
+      border-radius: 12px;
+      padding: 20px 30px;
+      margin: 0 auto; 
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 800px;
+    }
+    h2 {
+      font-weight: bold;
+      color: black;
+    }
+    input {
+      padding: 8px;
+      margin: 5px;
+      border-radius: 6px;
+      border: 1px solid #666;
+      outline: none;
+      text-align: center;
+      width: 150px;
+      color: black;
+      background-color: white;
+    }
+    button {
+      padding: 8px 16px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 6px;
+      background-color: #99ccff;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    button:hover {
+      background-color: #80bfff;
+    }
+    #risultatoMultiplo, #subnetMask {
+      margin-top: 20px;
+      font-weight: bold;
+      color: black;
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+  <div class="rettangolo">
+    <h2>Convertitore Decimale → Binario (4 ottetti da 8 bit)</h2>
+    <p>Inserisci quattro numeri tra 0 e 255.</p>
+    <div>
+      <input type="number" id="num1" min="0" max="255" placeholder="Numero 1">
+      <input type="number" id="num2" min="0" max="255" placeholder="Numero 2">
+      <input type="number" id="num3" min="0" max="255" placeholder="Numero 3">
+      <input type="number" id="num4" min="0" max="255" placeholder="Numero 4">
+    </div>
+    <p>Inserisci il prefisso (es. 22)</p>
+    <div>
+      <input type="number" id="prefix" min="0" max="32" placeholder="Prefisso (max 32)">
+      <button onclick="convertiConSubnet()">Converti</button>
+    </div>
+    <div id="risultatoMultiplo"></div>
+    <div id="subnetMask"></div>
+  </div>
+  <script>
+    function convertiConSubnet() {
+      let n1 = document.getElementById('num1').value;
+      let n2 = document.getElementById('num2').value;
+      let n3 = document.getElementById('num3').value;
+      let n4 = document.getElementById('num4').value;
+      let prefix = document.getElementById('prefix').value;
+      let risultato = document.getElementById('risultatoMultiplo');
+      let subnet = document.getElementById('subnetMask');
+      if (n1 === "" || n2 === "" || n3 === "" || n4 === "" ||
+          n1 < 0 || n1 > 255 || n2 < 0 || n2 > 255 ||
+          n3 < 0 || n3 > 255 || n4 < 0 || n4 > 255) {
+        risultato.textContent = "Inserisci numeri validi tra 0 e 255 in tutti i campi.";
+        risultato.style.color = "red";
+        subnet.textContent = "";
+        return;
+      }
+      if (prefix === "" || prefix < 0 || prefix > 36) {
+        risultato.textContent = "";
+        subnet.textContent = "Inserisci un prefisso valido tra 0 e 36.";
+        subnet.style.color = "red";
+        return;
+      }
+      let b1 = parseInt(n1).toString(2).padStart(8, '0');
+      let b2 = parseInt(n2).toString(2).padStart(8, '0');
+      let b3 = parseInt(n3).toString(2).padStart(8, '0');
+      let b4 = parseInt(n4).toString(2).padStart(8, '0');
+      risultato.textContent = "IP in binario: " + b1 + "." + b2 + "." + b3 + "." + b4;
+      risultato.style.color = "black";
+      let pref = parseInt(prefix);
+      let maskBinaria = "";
+      for (let i = 0; i < 32; i++) {
+        maskBinaria += (i < pref) ? "1" : "0";
+      }
+      let m1 = maskBinaria.slice(0, 8);
+      let m2 = maskBinaria.slice(8, 16);
+      let m3 = maskBinaria.slice(16, 24);
+      let m4 = maskBinaria.slice(24, 32);
+      subnet.textContent = "Subnet mask (/"+pref+"): " + m1 + "." + m2 + "." + m3 + "." + m4;
+      subnet.style.color = "black";
+    }
+  </script>
+</body>
+</html>
