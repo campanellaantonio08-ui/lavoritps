@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Anagrafica 2.0</title>
+  <style>
+    body {
+      background-color: #f0f8ff;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      margin: 0;
+      color: black;
+    }
+
+    h1, h2 {
+      color: #333;
+      text-align: center;
+    }
+
+    input[type="text"], select {
+      padding: 6px;
+      margin: 5px;
+      border-radius: 5px;
+      border: 1px solid #666;
+      width: 200px;
+      text-align: left;
+    }
+
+    input[type="button"], button {
+      padding: 6px 12px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 6px;
+      background-color: #99ccff;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    input[type="button"]:hover, button:hover {
+      background-color: #80bfff;
+    }
+
+    p {
+      margin: 5px 0;
+      font-weight: bold;
+    }
+
+    .output {
+      font-weight: normal;
+      color: #000;
+      margin-left: 10px;
+    }
+
+    div {
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Anagrafica 2.0</h1>
+
+  <p>Nome:</p>
+  <input type="text" id="nomeInput">
+  <p class="output" id="nomeOutput"></p>
+
+  <p>Cognome:</p>
+  <input type="text" id="cognomeInput">
+  <p class="output" id="cognomeOutput"></p>
+
+  <p>Indirizzo:</p>
+  <input type="text" id="indirizzoInput">
+  <p class="output" id="indirizzoOutput"></p>
+
+  <p>Città:</p>
+  <input type="text" id="cittàInput">
+  <p class="output" id="cittàOutput"></p>
+
+  <p>CAP:</p>
+  <input type="text" id="capInput">
+  <p class="output" id="capOutput"></p>
+
+  <p>Età:</p>
+  <input type="text" id="etàInput">
+  <p class="output" id="etàOutput"></p>
+
+  <button type="button" onclick="mostraDati()">Mostra Dati</button>
+  <p class="output" id="generazioneOutput"></p>
+
+  <h2>Sesso:</h2>
+  <div>
+    <input type="radio" name="sesso" value="uomo"> Uomo<br>
+    <input type="radio" name="sesso" value="donna"> Donna<br>
+    <input type="radio" name="sesso" value="altro"> Altro<br>
+    <input type="button" onclick="controlla();" value="Invia">
+    <p class="output" id="sessoOutput"></p>
+  </div>
+
+  <h2>Seleziona Città e Provincia:</h2>
+  <div>
+    <div>
+      <select id="prov" onchange="Validate()">
+        <option value="0">Select</option>
+        <option value="1">Milano</option>
+        <option value="2">Pavia</option>
+        <option value="3">Bergamo</option>
+      </select>
+    </div>
+
+    <div id="div1" style="visibility:hidden;">
+      <select id="comMI" onchange="scelta_MI()">
+        <option value="0">Select</option>
+        <option value="1">Rho</option>
+        <option value="2">Lainate</option>
+        <option value="3">Parabiago</option>
+      </select>
+    </div>
+
+    <div id="div2" style="visibility:hidden;">
+      <select id="comPV" onchange="scelta_PV()">
+        <option value="0">Select</option>
+        <option value="1">Villanterio</option>
+        <option value="2">Trivolzio</option>
+        <option value="3">Torre D'isola</option>
+      </select>
+    </div>
+
+    <div id="div3" style="visibility:hidden;">
+      <select id="comBG" onchange="scelta_BG()">
+        <option value="0">Select</option>
+        <option value="1">Albino</option>
+        <option value="2">Bisanzio</option>
+        <option value="3">Calvenzano</option>
+      </select>
+    </div>
+
+    <p class="output" id="provOutput"></p>
+    <p class="output" id="cittaOutput"></p>
+  </div>
+
+  <h2>Seleziona i veicoli che possiedi:</h2>
+  <input type="checkbox" value="bici" onclick="onClickHandlerVeicoli(this);"> Ho una bici<br>
+  <input type="checkbox" value="auto" onclick="onClickHandlerVeicoli(this);"> Ho un'auto<br>
+  <input type="checkbox" value="barca" onclick="onClickHandlerVeicoli(this);"> Ho una barca<br>
+  <input type="checkbox" value="monopattino" onclick="onClickHandlerVeicoli(this);"> Ho un monopattino<br>
+  <input type="checkbox" value="moto" onclick="onClickHandlerVeicoli(this);"> Ho una moto<br>
+  <p class="output" id="rispVeicoli"></p>
+
+  <h2>Seleziona gli sport che pratichi:</h2>
+  <input type="checkbox" value="Calcio" onclick="onClickHandlerSport(this);"> Calcio<br>
+  <input type="checkbox" value="Basket" onclick="onClickHandlerSport(this);"> Basket<br>
+  <input type="checkbox" value="Nuoto" onclick="onClickHandlerSport(this);"> Nuoto<br>
+  <input type="checkbox" value="Tennis" onclick="onClickHandlerSport(this);"> Tennis<br>
+  <input type="checkbox" value="Pallavolo" onclick="onClickHandlerSport(this);"> Pallavolo<br>
+  <input type="checkbox" value="Danza" onclick="onClickHandlerSport(this);"> Danza<br>
+  <p class="output" id="rispSport"></p>
+
+  <script>
+    function mostraDati() {
+      var nome = document.getElementById("nomeInput").value;
+      var cognome = document.getElementById("cognomeInput").value;
+      var indirizzo = document.getElementById("indirizzoInput").value;
+      var città = document.getElementById("cittàInput").value;
+      var cap = document.getElementById("capInput").value;
+      var età = document.getElementById("etàInput").value;
+
+      document.getElementById("nomeOutput").innerText = nome;
+      document.getElementById("cognomeOutput").innerText = cognome;
+      document.getElementById("indirizzoOutput").innerText = indirizzo;
+      document.getElementById("cittàOutput").innerText = città;
+      document.getElementById("capOutput").innerText = cap;
+      document.getElementById("etàOutput").innerText = età;
+
+      let anno = 2025 - parseInt(età);
+      let generazione;
+
+      if (anno >= 1901 && anno <= 1927) generazione = "Greatest Generation";
+      else if (anno >= 1928 && anno <= 1945) generazione = "Generazione Silenziosa";
+      else if (anno >= 1946 && anno <= 1964) generazione = "Baby Boomers";
+      else if (anno >= 1965 && anno <= 1980) generazione = "Generazione X";
+      else if (anno >= 1981 && anno <= 1996) generazione = "Millennials";
+      else if (anno >= 1997 && anno <= 2012) generazione = "Generazione Z";
+      else if (anno >= 2013) generazione = "Generazione Alpha";
+      else generazione = "Anno non valido";
+
+      document.getElementById("generazioneOutput").innerText = generazione;
+    }
+
+    function controlla() {
+      for (i = 0; i < document.getElementsByName("sesso").length; i++) {
+        if (document.getElementsByName("sesso")[i].checked) {
+          document.getElementById("sessoOutput").innerText =
+            document.getElementsByName("sesso")[i].value;
+        }
+      }
+    }
+
+    let veicoliSelezionati = [];
+    function onClickHandlerVeicoli(checkbox) {
+      let valore = checkbox.value;
+      if (checkbox.checked) {
+        if (!veicoliSelezionati.includes(valore)) veicoliSelezionati.push(valore);
+      } else veicoliSelezionati = veicoliSelezionati.filter(v => v !== valore);
+      document.getElementById("rispVeicoli").innerText = veicoliSelezionati.join(", ");
+    }
+
+    let sportPraticati = [];
+    function onClickHandlerSport(checkbox) {
+      let valore = checkbox.value;
+      if (checkbox.checked) {
+        if (!sportPraticati.includes(valore)) sportPraticati.push(valore);
+      } else sportPraticati = sportPraticati.filter(v => v !== valore);
+      document.getElementById("rispSport").innerText = sportPraticati.join(", ");
+    }
+
+    function Validate() {
+      let e = document.getElementById("prov");
+      let provincia = e.options[e.selectedIndex].value;
+
+      document.getElementById("div1").style.visibility = "hidden";
+      document.getElementById("div2").style.visibility = "hidden";
+      document.getElementById("div3").style.visibility = "hidden";
+
+      if (provincia == 1) document.getElementById("div1").style.visibility = "visible";
+      else if (provincia == 2) document.getElementById("div2").style.visibility = "visible";
+      else if (provincia == 3) document.getElementById("div3").style.visibility = "visible";
+    }
+
+    function scelta_MI() {
+      let prov = document.getElementById("prov").options[document.getElementById("prov").selectedIndex].text;
+      let citta = document.getElementById("comMI").options[document.getElementById("comMI").selectedIndex].text;
+      sped(prov, citta);
+    }
+
+    function scelta_PV() {
+      let prov = document.getElementById("prov").options[document.getElementById("prov").selectedIndex].text;
+      let citta = document.getElementById("comPV").options[document.getElementById("comPV").selectedIndex].text;
+      sped(prov, citta);
+    }
+
+    function scelta_BG() {
+      let prov = document.getElementById("prov").options[document.getElementById("prov").selectedIndex].text;
+      let citta = document.getElementById("comBG").options[document.getElementById("comBG").selectedIndex].text;
+      sped(prov, citta);
+    }
+
+    function sped(x, y) {
+      document.getElementById("provOutput").innerText = "Provincia: " + x;
+      document.getElementById("cittaOutput").innerText = "Città: " + y;
+    }
+  </script>
+</body>
+</html>
