@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8">
+  <title>Convertitore da Decimale a Binario</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f8ff;
+      color: black;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .rettangolo {
+      background-color: #cce7ff;
+      border: 2px solid #99ccff;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px auto;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    input[type="number"] {
+      width: 120px;
+      padding: 8px;
+      margin: 5px;
+      border: 1px solid #666;
+      border-radius: 5px;
+      text-align: center;
+      color: black;
+    }
+
+    button {
+      background-color: #99ccff;
+      color: black;
+      border: 1px solid #666;
+      border-radius: 5px;
+      padding: 8px 15px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background-color: #80bfff;
+    }
+
+    #risultatoSingolo, #risultatoMultiplo {
+      margin-top: 15px;
+      font-weight: bold;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="rettangolo">
+    <h2>Convertitore Decimale → Binario (8 bit)</h2>
+    <p>Inserisci un numero tra 0 e 255 e ottieni la rappresentazione binaria a 8 bit.</p>
+
+    <div>
+      <input type="number" id="numeroSingolo" min="0" max="255" placeholder="Inserisci un numero">
+      <button onclick="convertiSingolo()">Converti</button>
+    </div>
+
+    <div id="risultatoSingolo"></div>
+  </div>
+
+  <div class="rettangolo">
+    <h2>Convertitore Decimale → Binario (4 numeri, 8 bit ciascuno)</h2>
+    <p>Inserisci quattro numeri tra 0 e 255 per ottenere la rappresentazione binaria.</p>
+
+    <div>
+      <input type="number" id="num1" min="0" max="255" placeholder="Numero 1">
+      <input type="number" id="num2" min="0" max="255" placeholder="Numero 2">
+      <input type="number" id="num3" min="0" max="255" placeholder="Numero 3">
+      <input type="number" id="num4" min="0" max="255" placeholder="Numero 4">
+      <button onclick="convertiMultiplo()">Converti</button>
+    </div>
+
+    <div id="risultatoMultiplo"></div>
+  </div>
+
+  <script>
+    function convertiSingolo() {
+      let numero = document.getElementById('numeroSingolo').value;
+      let risultato = document.getElementById('risultatoSingolo');
+
+      if (numero === "" || numero < 0 || numero > 255) {
+        risultato.textContent = "Inserisci un numero valido tra 0 e 255.";
+        risultato.style.color = "red";
+      } else {
+        let binario = parseInt(numero).toString(2).padStart(8, '0');
+        risultato.textContent = "Numero binario a 8 bit: " + binario;
+        risultato.style.color = "black";
+      }
+    }
+
+    function convertiMultiplo() {
+      let n1 = document.getElementById('num1').value;
+      let n2 = document.getElementById('num2').value;
+      let n3 = document.getElementById('num3').value;
+      let n4 = document.getElementById('num4').value;
+      let risultato = document.getElementById('risultatoMultiplo');
+
+      if (n1 === "" || n2 === "" || n3 === "" || n4 === "" || 
+          n1 < 0 || n1 > 255 || n2 < 0 || n2 > 255 || n3 < 0 || n3 > 255 || n4 < 0 || n4 > 255) {
+        risultato.textContent = "Inserisci numeri validi tra 0 e 255 in tutti i campi.";
+        risultato.style.color = "red";
+      } else {
+        let b1 = parseInt(n1).toString(2).padStart(8, '0');
+        let b2 = parseInt(n2).toString(2).padStart(8, '0');
+        let b3 = parseInt(n3).toString(2).padStart(8, '0');
+        let b4 = parseInt(n4).toString(2).padStart(8, '0');
+
+        risultato.textContent = "Numeri binari a 8 bit: " + b1 + "." + b2 + "." + b3 + "." + b4;
+        risultato.style.color = "black";
+      }
+    }
+  </script>
+
+</body>
+</html>
