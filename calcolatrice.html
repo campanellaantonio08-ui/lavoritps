@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <Title>"Calcolatrice"</Title>
+        <style>
+    body {
+        display: flex;
+        flex-direction:column;
+        height:100vh;
+        justify-content:center;
+        align-items:center;
+
+    }
+    #Calcolatrice {
+        display:grid;
+        grid-template-columns:repeat(4,1fr);
+        gap:5px;
+        width: 50vw;
+        padding: 5px;
+        background-color: lightblue;        
+        justify-content: center;
+        border-radius: 5px;
+    }
+    .pulsante {
+        display: grid;
+        justify-items: center;
+        height: 10vh;
+        background-color: blue;
+        align-items: center;
+        font-weight: bold;
+        border-radius: 5px;
+
+    }
+    .pulsante:hover {
+        background-color: rgb(42, 42, 239);
+        cursor: pointer;
+    }
+    .operatore {
+        background-color: rgb(6, 6, 199);
+    }
+    .operatore:hover {
+        background-color: rgb(5, 5, 134);
+    }
+    #schermo {
+        width: 50vw;
+        height: 10vh;
+        font-size: 5vh;
+        text-align: right;
+        margin-bottom: 10px;
+    }
+</style>
+    <body>
+    <input type="text" id="schermo" disabled/>
+    <div id="Calcolatrice">
+        <div class="pulsante operatore" onclick="aggiungi('sin')">sin</div>
+        <div class="pulsante operatore" onclick="aggiungi('cos')">cos</div>
+        <div class="pulsante operatore" onclick="aggiungi('tan')">tan</div>
+        <div class="pulsante operatore" onclick="aggiungi('^')">^</div>
+        <div class="pulsante" onclick="aggiungi('1')">1</div>
+        <div class="pulsante" onclick="aggiungi('2')">2</div>
+        <div class="pulsante" onclick="aggiungi('3')">3</div>
+        <div class="pulsante operatore" onclick="aggiungi('%')">%</div>
+        <div class="pulsante" onclick="aggiungi('4')">4</div>
+        <div class="pulsante" onclick="aggiungi('5')">5</div>
+        <div class="pulsante" onclick="aggiungi('6')">6</div>
+        <div class="pulsante operatore" onclick="aggiungi('+')">+</div>
+        <div class="pulsante" onclick="aggiungi('7')">7</div>
+        <div class="pulsante" onclick="aggiungi('8')">8</div>
+        <div class="pulsante" onclick="aggiungi('9')">9</div>
+        <div class="pulsante operatore" onclick="aggiungi('-')">-</div>
+        <div class="pulsante" onclick="aggiungi('0')">0</div>
+        <div class="pulsante" onclick="aggiungi('.')">.</div>
+        <div class="pulsante" onclick="cancella()">c</div>
+        <div class="pulsante operatore" onclick="aggiungi('*')">*</div>
+        <div class="pulsante operatore" onclick="aggiungi('/')">/</div>
+        <div class="pulsante operatore" onclick="aggiungi('√')">√</div>
+        <div class="pulsante operatore" onclick="calcola()">=</div>
+
+    
+    </div>
+    <script>
+        var schermo = document.getElementById("schermo");
+
+        function aggiungi(s) {
+            schermo.value += s;
+        }
+
+        function cancella() {
+            schermo.value = "";
+        }
+        function calcola() {
+        var testo = schermo.value;
+        var elementi = [];
+        var numero = "";
+        if (testo.startsWith("sin")) {
+          var n = parseFloat(testo.substring(3));
+          schermo.value = Math.sin(n * Math.PI / 180);
+          return;
+        }
+        if (testo.startsWith("cos")) {
+          var n = parseFloat(testo.substring(3));
+          schermo.value = Math.cos(n * Math.PI / 180);
+          return;
+        }
+        if (testo.startsWith("tan")) {
+          var n = parseFloat(testo.substring(3));
+          schermo.value = Math.tan(n * Math.PI / 180);
+          return;
+        }
+        if (testo.startsWith("√")) {
+          var n = parseFloat(testo.substring(1));
+          schermo.value = Math.sqrt(n);
+          return;
+        }
+        if (schermo.value.endsWith("%")) {
+          var numero = schermo.value.substring(0, schermo.value.length - 1);
+          numero = parseFloat(numero);
+          schermo.value = numero / 100;
+          return;
+        }
+        for (var i = 0; i < testo.length; i++) {
+          var c = testo[i];
+            if ((c >= '0' && c <= '9') || c == '.') {
+              numero += c;
+            } else {
+              elementi.push(numero);
+              elementi.push(c);
+              numero = "";
+            }
+        }
+        elementi.push(numero);
+        for (var i = 1; i < elementi.length; i += 2) {
+          if (elementi[i] == '^') {
+            var a = parseFloat(elementi[i - 1]);
+            var b = parseFloat(elementi[i + 1]);
+            var risultato = Math.pow(a, b);
+            elementi.splice(i - 1, 3, risultato.toString());
+            i -= 2;
+          }
+        }
+        for (var i = 1; i < elementi.length; i += 2) {
+          if (elementi[i] == '*' || elementi[i] == '/') {
+            var a = parseFloat(elementi[i - 1]);
+            var b = parseFloat(elementi[i + 1]);
+            var risultato = 0;
+            if (elementi[i] == '*') {
+                risultato = a * b;
+            } else {
+                risultato = a / b;
+            }
+            elementi.splice(i - 1, 3, risultato.toString());
+            i -= 2;
+          }
+        }
+        for (var i = 1; i < elementi.length; i += 2) {
+          var a = parseFloat(elementi[i - 1]);
+          var b = parseFloat(elementi[i + 1]);
+          var risultato = 0;
+          if (elementi[i] == '+') {
+            risultato = a + b;
+          } else if (elementi[i] == '-') {
+            risultato = a - b;
+          }
+          elementi.splice(i - 1, 3, risultato.toString());
+          i -= 2;
+        }
+        schermo.value = elementi[0];
+    }
+    </script>
+    </body>
+</html>
