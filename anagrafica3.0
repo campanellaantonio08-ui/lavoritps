@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<head>
+    <title>Anagrafica 3.0</title>
+
+    <style>
+        body {
+            background-color: #6a98ca;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .contenitore {
+            background-color: #3399ff;
+            color: white;
+            padding: 20px;
+            width: 300px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 40px auto;
+        }
+
+        input {
+            margin-bottom: 10px;
+            width: 90%;
+        }
+
+        button {
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Anagrafica 3.0</h1>
+
+<div class="contenitore">
+
+    Nome: <input id="nome"><br>
+    Cognome: <input id="cognome"><br>
+    citta: <input id="citta"><br><br>
+    animale: <input id="animale"><br><br>
+
+    <button onclick="inserisci()">Inserisci</button>
+    <button onclick="mostra()">Mostra</button>
+
+    <pre id="risultato"></pre>
+
+</div>
+
+<script>
+    const persona = [];
+
+    function inserisci() {
+        const oggetto = {
+            nome: document.getElementById("nome").value,
+            cognome: document.getElementById("cognome").value,
+            citta: document.getElementById("citta").value,
+            animale: document.getElementById("animale").value
+        };
+
+        persona.push(oggetto);
+
+        document.getElementById("nome").value = "";
+        document.getElementById("cognome").value = "";
+        document.getElementById("citta").value = "";
+        document.getElementById("animale").value = "";
+    }
+
+    function mostra() {
+        let testo = "";
+
+        for (let i = 0; i < persona.length; i++) {
+            testo +=
+                "Nome: " + persona[i].nome + "\n" +
+                "Cognome: " + persona[i].cognome + "\n" +
+                "citta: " + persona[i].citta + "\n" +
+                "animale: " + persona[i].animale + "\n\n";
+        }
+
+        document.getElementById("risultato").innerText = testo;
+    }
+</script>
+
+</body>
+</html>
