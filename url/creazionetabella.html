@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Dati inseriti</title>
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<h2><b>Dati inseriti</b></h2>
+
+<table id="tabella1" border="1">
+</table>
+
+<script>
+
+  s = "";
+
+  var url=document.location.search.substring(0);
+
+  var url1 = url.split("&")[0]; 
+  var url2 = url.split("&")[1]; 
+  var url3 = url.split("&")[2]; 
+
+  var nome = url1.substr(6);
+  var cognome = url2.substr(8);
+  var animali = url3.substr(8);
+  s = s + "<tr><th>Nome</th><th>Cognome</th><th>Animali</th></tr>";
+  s = s + "<tr>";
+  s = s + "<td>" + nome + "</td>";
+  s = s + "<td>" + cognome + "</td>";
+  s = s + "<td>" + animali + "</td>";
+  s = s + "</tr>";
+  document.getElementById("tabella1").innerHTML = s;
+
+</script>
+
+</body>
+</html>
