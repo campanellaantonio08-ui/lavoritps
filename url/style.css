@@ -1,0 +1,18 @@
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; 
+    background-color: #e0f0ff; 
+    font-family: Arial, sans-serif;
+    color: black; 
+    margin: 0;
+}
+.container {
+    background-color: #99ccff; 
+    padding: 20px;
+    border: 2px solid #3399ff; 
+    border-radius: 5px;
+    text-align: center;
+}
