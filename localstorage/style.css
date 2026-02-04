@@ -1,0 +1,74 @@
+/* Stile generale */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #e6f2ff; /* azzurro chiaro */
+    color: black;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Contenitore centrale */
+body > * {
+    max-width: 900px;   /* larghezza comoda, non troppo */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Titoli */
+h1, h2 {
+    margin-top: 20px;
+}
+
+/* Input e select */
+input[type="text"],
+input[type="number"],
+select {
+    margin-bottom: 10px;
+    padding: 5px;
+    width: 250px; /* un po’ più larghi */
+}
+
+/* Select multipla sport */
+select[multiple] {
+    width: 260px;
+}
+
+/* Radio e checkbox allineati */
+input[type="radio"],
+input[type="checkbox"] {
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+/* Bottoni */
+input[type="button"] {
+    width: auto;
+    padding: 6px 14px;
+    margin: 10px;
+    cursor: pointer;
+}
+
+/* Tabella (stampa.html) */
+table {
+    border-collapse: collapse;
+    margin: 20px auto;
+    width: 100%; /* sfrutta il contenitore */
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 8px;
+}
+
+/* Intestazioni tabella */
+th {
+    background-color: #cce0ff;
+}
+
+/* Link */
+a {
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+}
