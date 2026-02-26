@@ -1,0 +1,56 @@
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #e6f2ff; 
+    color: black;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
+body > * {
+    max-width: 900px;   
+    margin-left: auto;
+    margin-right: auto;
+}
+h1, h2 {
+    margin-top: 20px;
+}
+input[type="text"],
+input[type="number"],
+select {
+    margin-bottom: 10px;
+    padding: 5px;
+    width: 250px; 
+}
+select[multiple] {
+    width: 260px;
+}
+input[type="radio"],
+input[type="checkbox"] {
+    margin-right: 6px;
+    vertical-align: middle;
+}
+input[type="button"] {
+    width: auto;
+    padding: 6px 14px;
+    margin: 10px;
+    cursor: pointer;
+}
+table {
+    border-collapse: collapse;
+    margin: 20px auto;
+    width: 100%; 
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 8px;
+}
+th {
+    background-color: #cce0ff;
+}
+a {
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+}
