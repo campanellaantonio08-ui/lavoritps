@@ -54,15 +54,12 @@
         if (!listaArticoliSalvati || listaArticoliSalvati.trim() == "") {
             document.getElementById("lista").innerHTML = "<p style='text-align:center; font-weight:bold;'>Il carrello è vuoto.</p>";
         } else {
-            // Separiamo i vari prodotti divisi dal carattere '|'
             elementiCarrello = listaArticoliSalvati.split("|");
             caricaProdottoSeguente();
         }
 
-        // Funzione ricorsiva sequenziale per caricare i dati da file CSV differenti
         function caricaProdottoSeguente() {
             if (conteggioRichiesteFatte >= elementiCarrello.length) {
-                // Abbiamo finito di leggere tutti i file per tutti i prodotti! Mostriamo il totale.
                 document.getElementById("totale").innerHTML = "Totale: " + totaleFinale.toFixed(2) + " €";
                 return;
             }
@@ -74,7 +71,6 @@
                 return;
             }
 
-            // Dividiamo il nome del file dall'indice della riga usando il carattere ':'
             var infoDati = pezzoCorrente.split(":");
             var fileCSV = infoDati[0];
             var indiceRiga = infoDati[1];
@@ -86,7 +82,6 @@
                     var righe = xhttp.responseText.replace(/\r/g, "").split("\n");
                     var separatore = righe[0].includes(";") ? ";" : ",";
                     
-                    // Rilevamento posizioni intestazioni per questo specifico file
                     var idxMarca = 0, idxModello = 1, idxPrezzo = 4;
                     var intestazioni = righe[0].split(separatore);
                     for (var k = 0; k < intestazioni.length; k++) {
@@ -96,12 +91,10 @@
                         if (voce.indexOf("prezzo") !== -1 || voce.indexOf("costo") !== -1) idxPrezzo = k;
                     }
 
-                    // Estrazione dati della riga corrispondente
                     if (righe[indiceRiga]) {
                         var c = righe[indiceRiga].split(separatore);
                         var prezzoPuro = c[idxPrezzo] ? c[idxPrezzo].replace("€", "").trim() : "0";
 
-                        // Stampiamo a schermo il prodotto specificando anche la provenienza (es: [scarpe.csv])
                         var divProdotto = "<div style='padding: 10px; border-bottom: 1px solid #0369a1;'>";
                         divProdotto += "<small style='color:gray;'>[" + fileCSV + "]</small> ";
                         divProdotto += "<strong>" + c[idxMarca] + " " + c[idxModello] + "</strong> - " + prezzoPuro + " €";
@@ -113,12 +106,10 @@
                         riepilogoPerPDF += "- " + c[idxMarca].trim() + " " + c[idxModello].trim() + " (" + prezzoPuro + " Euro) [da " + fileCSV + "][A CAPO]";
                     }
                 }
-                // Passa al prodotto successivo nel carrello
                 conteggioRichiesteFatte++;
                 caricaProdottoSeguente();
             };
             xhttp.onerror = function() {
-                // In caso di errore di lettura del file passiamo comunque avanti per non bloccare la pagina
                 conteggioRichiesteFatte++;
                 caricaProdottoSeguente();
             };
