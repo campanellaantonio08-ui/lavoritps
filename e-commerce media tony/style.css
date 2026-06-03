@@ -1,0 +1,122 @@
+/* --- RESET BASE --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #e0f2fe; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+h1 {
+    color: #0369a1;
+    font-size: 50pt;
+    margin-bottom: 40px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* Icona Carrello in alto a destra */
+#icona-carrello {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #0369a1;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 4px 4px 0px #0c4a6e;
+    z-index: 1000;
+}
+
+#icona-carrello:hover { background-color: #0ea5e9; }
+
+.form-container {
+    background-color: #bae6fd;
+    padding: 30px;
+    border-radius: 25px;
+    width: 100%;
+    max-width: 900px;
+    text-align: center;
+    border: 2px solid #0369a1;
+    box-shadow: 8px 8px 0px #0369a1;
+    margin-bottom: 50px;
+}
+
+/* --- LA VETRINA (GRIGLIA DA 5 CENTRATA) --- */
+.container-prodotti {
+    display: flex;
+    flex-wrap: wrap;          /* Permette di andare a capo */
+    justify-content: center;  /* Centra i quadratini nella riga */
+    gap: 20px;                /* Spazio orizzontale e verticale */
+    width: 100%;
+    max-width: 1100px;        /* Larghezza per contenere 5 card da 190px + gap */
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.card {
+    background-color: #bae6fd;
+    border: 2px solid #0369a1;
+    border-radius: 20px;
+    width: 190px;             /* Larghezza fissa */
+    flex-shrink: 0;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 4px 4px 0px #0369a1;
+    transition: transform 0.2s;
+}
+
+.card:hover { transform: translateY(-5px); }
+
+.card img {
+    width: 100%;
+    height: 130px;
+    object-fit: contain;
+    background-color: white;
+    border-radius: 12px;
+    border: 1px solid #0369a1;
+    margin-bottom: 10px;
+}
+
+.card h3 {
+    font-size: 11pt;
+    color: #0369a1;
+    margin-bottom: 8px;
+    height: 35px;
+    overflow: hidden;
+}
+
+.prezzo {
+    font-size: 14pt;
+    font-weight: bold;
+    color: #d32f2f;
+    margin-bottom: 10px;
+}
+
+button {
+    background-color: #0ea5e9;
+    color: white;
+    border: 2px solid #0369a1;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+}
+
+button:hover { background-color: #0284c7; }
+
+/* STILE TENDINE */
+details { cursor: pointer; padding: 10px; text-align: left; }
+summary { font-size: 18pt; font-weight: bold; color: #0369a1; list-style: none; }
+.contenuto-tendina { padding: 15px; background: rgba(255,255,255,0.2); border-radius: 10px; margin-top: 10px; }
