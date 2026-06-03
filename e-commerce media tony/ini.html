@@ -69,18 +69,15 @@
             if (inputDati.files.length === 0) {
                 alert("Per favore, seleziona un file CSV prima di continuare!");
                 return;
-            }A
+            }
             
             var nomeFile = inputDati.files[0].name;
-            
-            // CORREZIONE CRUCIALE: Salviamo il vecchio carrello prima di pulire, così non lo perdiamo!
             var vecchioCarrello = localStorage.getItem("lista_carrello");
             
-            localStorage.clear(); // Pulisce i vecchi file caricati
+            localStorage.clear();
             localStorage.setItem("nome_file_csv", nomeFile);
             
-            // Se c'erano già prodotti nel carrello, li rimettiamo dentro al sicuro!
-            if (vecchioCarrello) {AV
+            if (vecchioCarrello) {
                 localStorage.setItem("lista_carrello", vecchioCarrello);
             }
             
