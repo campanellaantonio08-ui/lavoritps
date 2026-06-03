@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Carrello - Media Tony</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+    <div id="icona-carrello" onclick="window.location.href='carrello.html'">🛒 Carrello</div>
+    <h1>Il Tuo Carrello Multi-Negozio</h1>
+
+    <div id="box-carrello" class="form-container">
+        <h2>Prodotti Selezionati</h2>
+        <div id="lista" style="text-align: left; margin-bottom: 20px;"></div>
+        <hr>
+        <h2 id="totale" style="margin: 20px 0; color: #0369a1;">Totale: 0 €</h2>
+        
+        <button onclick="vaiAlLogin()" style="background-color: #16a34a; margin-bottom: 10px; font-size: 14pt;">Effettua Ordine</button>
+        <button onclick="svuota()" style="background-color: #dc2626; margin-bottom: 10px;">Svuota Carrello</button>
+        <button onclick="window.location.href='index.html'">Continua lo Shopping</button>
+    </div>
+
+    <div id="box-login" class="form-container" style="display: none;">
+        <h2>Login di Sicurezza</h2>
+        <input type="text" id="user" placeholder="Nome Utente" style="width: 90%; padding: 10px; margin: 10px; border: 2px solid #0369a1; border-radius: 10px;"><br>
+        <input type="password" id="pass" placeholder="Password" style="width: 90%; padding: 10px; margin: 10px; border: 2px solid #0369a1; border-radius: 10px;">
+        <button onclick="controllaLogin()" style="background-color: #0ea5e9;">Accedi</button>
+    </div>
+
+    <div id="box-dati" class="form-container" style="display: none;">
+        <h2>Dati Consegna e Pagamento</h2>
+        <input type="text" id="nome-cognome" placeholder="Nome e Cognome" style="width: 90%; padding: 10px; margin: 5px; border: 2px solid #0369a1; border-radius: 10px;"><br>
+        <input type="text" id="via" placeholder="Via della Consegna" style="width: 90%; padding: 10px; margin: 5px; border: 2px solid #0369a1; border-radius: 10px;"><br>
+        <input type="text" id="citofono" placeholder="Nome sul Citofono" style="width: 90%; padding: 10px; margin: 5px; border: 2px solid #0369a1; border-radius: 10px;"><br>
+        <input type="text" id="telefono" placeholder="Numero di Telefono" style="width: 90%; padding: 10px; margin: 5px; border: 2px solid #0369a1; border-radius: 10px;"><br>
+        <select id="metodo-pagamento" style="width: 90%; padding: 10px; margin: 10px; border: 2px solid #0369a1; border-radius: 10px; font-weight: bold; background: white;">
+            <option value="Carta di Credito">Carta di Credito</option>
+            <option value="PayPal">PayPal</option>
+            <option value="PostePay">PostePay</option>
+            <option value="Revolut">Revolut</option>
+        </select><br><br>
+        <button onclick="effettuaPagamento()" style="background-color: #16a34a; font-size: 14pt;">Effettua Pagamento</button>
+    </div>
+
+    <script>
+        var listaArticoliSalvati = localStorage.getItem("lista_carrello");
+        var riepilogoPerPDF = ""; 
+        var totaleFinale = 0;
+        var conteggioRichiesteFatte = 0;
+        var elementiCarrello = [];
+
+        if (!listaArticoliSalvati || listaArticoliSalvati.trim() == "") {
+            document.getElementById("lista").innerHTML = "<p style='text-align:center; font-weight:bold;'>Il carrello è vuoto.</p>";
+        } else {
+            // Separiamo i vari prodotti divisi dal carattere '|'
+            elementiCarrello = listaArticoliSalvati.split("|");
+            caricaProdottoSeguente();
+        }
+
+        // Funzione ricorsiva sequenziale per caricare i dati da file CSV differenti
+        function caricaProdottoSeguente() {
+            if (conteggioRichiesteFatte >= elementiCarrello.length) {
+                // Abbiamo finito di leggere tutti i file per tutti i prodotti! Mostriamo il totale.
+                document.getElementById("totale").innerHTML = "Totale: " + totaleFinale.toFixed(2) + " €";
+                return;
+            }
+
+            var pezzoCorrente = elementiCarrello[conteggioRichiesteFatte];
+            if (pezzoCorrente.trim() == "") {
+                conteggioRichiesteFatte++;
+                caricaProdottoSeguente();
+                return;
+            }
+
+            // Dividiamo il nome del file dall'indice della riga usando il carattere ':'
+            var infoDati = pezzoCorrente.split(":");
+            var fileCSV = infoDati[0];
+            var indiceRiga = infoDati[1];
+
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("GET", fileCSV, true);
+            xhttp.onload = function() {
+                if (xhttp.status == 200) {
+                    var righe = xhttp.responseText.replace(/\r/g, "").split("\n");
+                    var separatore = righe[0].includes(";") ? ";" : ",";
+                    
+                    // Rilevamento posizioni intestazioni per questo specifico file
+                    var idxMarca = 0, idxModello = 1, idxPrezzo = 4;
+                    var intestazioni = righe[0].split(separatore);
+                    for (var k = 0; k < intestazioni.length; k++) {
+                        var voce = intestazioni[k].toLowerCase().trim();
+                        if (voce.indexOf("marca") !== -1 || voce.indexOf("categoria") !== -1) idxMarca = k;
+                        if (voce.indexOf("modello") !== -1 || voce.indexOf("nome") !== -1 || voce.indexOf("titolo") !== -1) idxModello = k;
+                        if (voce.indexOf("prezzo") !== -1 || voce.indexOf("costo") !== -1) idxPrezzo = k;
+                    }
+
+                    // Estrazione dati della riga corrispondente
+                    if (righe[indiceRiga]) {
+                        var c = righe[indiceRiga].split(separatore);
+                        var prezzoPuro = c[idxPrezzo] ? c[idxPrezzo].replace("€", "").trim() : "0";
+
+                        // Stampiamo a schermo il prodotto specificando anche la provenienza (es: [scarpe.csv])
+                        var divProdotto = "<div style='padding: 10px; border-bottom: 1px solid #0369a1;'>";
+                        divProdotto += "<small style='color:gray;'>[" + fileCSV + "]</small> ";
+                        divProdotto += "<strong>" + c[idxMarca] + " " + c[idxModello] + "</strong> - " + prezzoPuro + " €";
+                        divProdotto += "</div>";
+                        
+                        document.getElementById("lista").innerHTML += divProdotto;
+                        
+                        totaleFinale += parseFloat(prezzoPuro);
+                        riepilogoPerPDF += "- " + c[idxMarca].trim() + " " + c[idxModello].trim() + " (" + prezzoPuro + " Euro) [da " + fileCSV + "][A CAPO]";
+                    }
+                }
+                // Passa al prodotto successivo nel carrello
+                conteggioRichiesteFatte++;
+                caricaProdottoSeguente();
+            };
+            xhttp.onerror = function() {
+                // In caso di errore di lettura del file passiamo comunque avanti per non bloccare la pagina
+                conteggioRichiesteFatte++;
+                caricaProdottoSeguente();
+            };
+            xhttp.send();
+        }
+
+        function vaiAlLogin() {
+            if (totaleFinale == 0) { alert("Il carrello è vuoto!"); return; }
+            document.getElementById("box-carrello").style.display = "none";
+            document.getElementById("box-login").style.display = "block";
+        }
+
+        function controllaLogin() {
+            var u = document.getElementById("user").value;
+            var p = document.getElementById("pass").value;
+            if (u == "" || p == "" || p.length < 8) { alert("Credenziali non valide (Password min. 8 caratteri)!"); return; }
+            
+            alert("Login effettuato!");
+            document.getElementById("box-login").style.display = "none";
+            document.getElementById("box-dati").style.display = "block";
+        }
+
+        function effettuaPagamento() {
+            var n = document.getElementById("nome-cognome").value;
+            var v = document.getElementById("via").value;
+            var t = document.getElementById("telefono").value;
+            var m = document.getElementById("metodo-pagamento").value;
+
+            if (n == "" || v == "" || t == "") { alert("Riempi i campi obbligatori!"); return; }
+
+            var corpoDati = "========================================\n\n";
+            corpoDati += "DATI SPEDIZIONE:\n";
+            corpoDati += "Cliente: " + n + "\n";
+            corpoDati += "Indirizzo: " + v + "\n";
+            corpoDati += "Telefono: " + t + "\n";
+            corpoDati += "Metodo di Pagamento: " + m + "\n\n";
+            corpoDati += "----------------------------------------\n";
+            corpoDati += "ELENCO PRODOTTI ACQUISTATI MISTI:\n";
+            corpoDati += riepilogoPerPDF.split("[A CAPO]").join("\n");
+            corpoDati += "----------------------------------------\n";
+            corpoDati += "TOTALE ORDINE UNICO: " + totaleFinale.toFixed(2) + " Euro\n\n";
+
+            if (window.jspdf && window.jspdf.jsPDF) {
+                var doc = new window.jspdf.jsPDF();
+                doc.setFont("Helvetica", "bold"); doc.setFontSize(22);
+                doc.text("RICEVUTA ORDINE MULTI-NEGOZIO", 105, 20, { align: "center" });
+                
+                doc.setFont("Helvetica", "normal"); doc.setFontSize(14);
+                doc.text("Grazie per aver acquistato su Media Tony!", 105, 30, { align: "center" });
+                
+                doc.setFont("Courier", "normal"); doc.setFontSize(11);
+                var righePDF = corpoDati.split("\n");
+                var y = 45;
+                for (var j = 0; j < righePDF.length; j++) {
+                    if (y > 270) { doc.addPage(); y = 15; }
+                    doc.text(righePDF[j], 15, y);
+                    y += 7;
+                }
+                doc.save("Ricevuta_Ordine_Completo.pdf");
+            }
+
+            alert("Pagamento completato e scontrino totale scaricato!");
+            localStorage.setItem("lista_carrello", "");
+            window.location.href = "index.html";
+        }
+
+        function svuota() {
+            localStorage.setItem("lista_carrello", "");
+            location.reload();
+        }
+    </script>
+</body>
+</html>
