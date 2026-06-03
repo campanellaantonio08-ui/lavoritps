@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Dettagli Prodotto - Media Tony</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="icona-carrello" onclick="window.location.href='carrello.html'">🛒 Carrello</div>
+    <h1>Scheda Prodotto</h1>
+
+    <div class="form-container" style="max-width: 600px; margin: 0 auto; text-align: center; padding: 20px;">
+        <div id="box-dettagli"></div>
+        <br>
+        <button onclick="aggiungiAlCarrello()" style="background-color: #16a34a; font-size: 14pt;">Aggiungi al Carrello</button>
+        <br><br>
+        <button onclick="window.location.href='index.html'" style="background-color: #0369a1;">Torna alla Home</button>
+    </div>
+
+    <script>
+        var nomeFile = localStorage.getItem("nome_file_csv");
+        var indiceSelezionato = localStorage.getItem("prodotto_selezionato");
+        var rigaCorrente = "";
+        var separatore = ",";
+        var idxMarca = 0, idxModello = 1, idxImmagine = 3, idxPrezzo = 4;
+
+        if (!nomeFile || !indiceSelezionato) {
+            window.location.href = "index.html";
+        } else {
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("GET", nomeFile, true);
+            xhttp.onload = function() {
+                if (xhttp.status == 200) {
+                    var testo = xhttp.responseText.replace(/\r/g, "");
+                    var righe = testo.split("\n");
+                    separatore = righe[0].includes(";") ? ";" : ",";
+                    
+                    var intestazioni = righe[0].split(separatore);
+                    for (var k = 0; k < intestazioni.length; k++) {
+                        var voce = intestazioni[k].toLowerCase().trim();
+                        if (voce.indexOf("marca") !== -1 || voce.indexOf("categoria") !== -1) idxMarca = k;
+                        if (voce.indexOf("modello") !== -1 || voce.indexOf("nome") !== -1 || voce.indexOf("titolo") !== -1) idxModello = k;
+                        if (voce.indexOf("immagine") !== -1 || voce.indexOf("img") !== -1) idxImmagine = k;
+                        if (voce.indexOf("prezzo") !== -1 || voce.indexOf("costo") !== -1) idxPrezzo = k;
+                    }
+
+                    rigaCorrente = righe[indiceSelezionato];
+                    if (rigaCorrente) {
+                        var col = rigaCorrente.split(separatore);
+                        var nomeImg = col[idxImmagine] ? col[idxImmagine].trim() : "default.png";
+                        var prezzoPuro = col[idxPrezzo] ? col[idxPrezzo].replace("€", "").trim() : "0";
+
+                        var html = "<img src='img/" + nomeImg + "' style='max-width:250px; height:250px; object-fit:contain;' onerror=\"this.src='https://placehold.co/250?text=Prodotto'\">";
+                        html += "<h2>" + col[idxMarca] + " " + col[idxModello] + "</h2>";
+                        html += "<h3 style='color:#16a34a; font-size:20pt;'>" + prezzoPuro + " €</h3>";
+                        
+                        html += "<div style='text-align:left; margin-top:20px; background:#f0f9ff; padding:15px; border-radius:10px;'>";
+                        for (var j = 0; j < col.length; j++) {
+                            if (j !== idxMarca && j !== idxModello && j !== idxImmagine && j !== idxPrezzo && intestazioni[j]) {
+                                html += "<p><b>" + intestazioni[j].trim() + ":</b> " + col[j].trim() + "</p>";
+                            }
+                        }
+                        html += "</div>";
+
+                        document.getElementById("box-dettagli").innerHTML = html;
+                    }
+                }
+            };
+            xhttp.send();
+        }
+
+        /* MODIFICA EFFETTUATA QUI: Adesso salva accoppiando il nome del file all'indice con il carattere ':' 
+           e separa i vari elementi nel carrello usando il carattere '|' */
+        function aggiungiAlCarrello() {
+            var carrello = localStorage.getItem("lista_carrello");
+            var elementoDaAggiungere = nomeFile + ":" + indiceSelezionato;
+
+            if (carrello) { 
+                carrello = carrello.trim(); 
+            }
+            
+            if (!carrello || carrello === "") {
+                carrello = elementoDaAggiungere;
+            } else {
+                carrello = carrello + "|" + elementoDaAggiungere;
+            }
+            
+            localStorage.setItem("lista_carrello", carrello);
+            alert("Aggiunto al carrello unico!");
+        }
+    </script>
+</body>
+</html>
