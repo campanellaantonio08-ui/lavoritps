@@ -70,8 +70,6 @@
             xhttp.send();
         }
 
-        /* MODIFICA EFFETTUATA QUI: Adesso salva accoppiando il nome del file all'indice con il carattere ':' 
-           e separa i vari elementi nel carrello usando il carattere '|' */
         function aggiungiAlCarrello() {
             var carrello = localStorage.getItem("lista_carrello");
             var elementoDaAggiungere = nomeFile + ":" + indiceSelezionato;
