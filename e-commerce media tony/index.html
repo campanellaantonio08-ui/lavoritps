@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Media Tony - Home</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        /* Dimensioni e stile del box della mappa */
+        #map {
+            width: 100%;
+            height: 350px;
+            border: 2px solid #0369a1;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="icona-carrello" onclick="window.location.href='carrello.html'">🛒 Carrello</div>
+
+    <h1>Media Tony</h1>
+
+    <div class="form-container">
+        <details>
+            <summary>Chi Siamo?</summary>
+            <div class="contenuto-tendina">
+                <p>Benvenuti da <strong>Media Tony</strong>. Il nostro sistema universale si adatta a qualsiasi inventario per offrirti il miglior servizio possibile.</p>
+            </div>
+        </details>
+        <hr style="margin:15px 0; border:0; border-top:1px solid #0369a1;">
+        
+        <details id="tendina-mappa">
+            <summary>Dove trovarci?</summary>
+            <div class="contenuto-tendina">
+                <p>Siamo in <strong>Via Roma 10</strong>. Aperti dal Lunedì al Sabato, dalle 9:00 alle 19:30!</p>
+                <div id="map"></div>
+            </div>
+        </details>
+    </div>
+
+    <div id="sezione-scelta">
+        <h2 style="color: #0369a1; margin-bottom: 20px; text-align: center;">Scegli una categoria/marca:</h2>
+        <div id="contenitore-marche" class="container-prodotti" style="display: flex; flex-wrap: wrap; justify-content: center;">
+            </div>
+    </div>
+
+    <div id="sezione-vetrina" style="display: none; width: 100%;">
+        <h2 id="titolo-marca" style="color: #0369a1; margin-bottom: 20px; text-align: center; text-transform: uppercase;"></h2>
+        
+        <div id="vetrina" class="container-prodotti">
+            </div>
+
+        <center>
+            <button onclick="location.reload()" style="width: 250px; margin-top: 30px; background-color: #0369a1;">
+                Torna alla scelta marca
+            </button>
+        </center>
+    </div>
+
+    <script>
+        var datiSalvati = ""; 
+        var nomeFile = localStorage.getItem("nome_file_csv");
+
+        var idxMarca = 0, idxModello = 1, idxImmagine = 3, idxPrezzo = 4;
+        var separatore = ",";
+
+        if (!nomeFile) {
+            window.location.href = "ini.html";
+        } else {
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("GET", nomeFile, true);
+            xhttp.onload = function() {
+                if (xhttp.status == 200) {
+                    datiSalvati = xhttp.responseText.replace(/\r/g, ""); 
+                    trovaStrutturaCSV();
+                }
+            };
+            xhttp.send();
+        }
+
+        function trovaStrutturaCSV() {
+            var righe = datiSalvati.split("\n");
+            if (righe.length === 0) return;
+
+            separatore = righe[0].includes(";") ? ";" : ",";
+            var intestazioni = righe[0].split(separatore);
+
+            for (var i = 0; i < intestazioni.length; i++) {
+                var voce = intestazioni[i].toLowerCase().trim();
+                if (voce.indexOf("marca") !== -1 || voce.indexOf("categoria") !== -1) idxMarca = i;
+                if (voce.indexOf("modello") !== -1 || voce.indexOf("nome") !== -1 || voce.indexOf("titolo") !== -1) idxModello = i;
+                if (voce.indexOf("immagine") !== -1 || voce.indexOf("img") !== -1 || voce.indexOf("foto") !== -1) idxImmagine = i;
+                if (voce.indexOf("prezzo") !== -1 || voce.indexOf("costo") !== -1) idxPrezzo = i;
+            }
+
+            creaBottoniMarche(righe);
+        }
+
+        function creaBottoniMarche(righe) {
+            var elencoMarche = [];
+            var htmlBottoni = "";
+
+            for (var i = 1; i < righe.length; i++) {
+                if (righe[i].trim() !== "") {
+                    var col = righe[i].split(separatore);
+                    var marca = col[idxMarca] ? col[idxMarca].trim() : "";
+                    
+                    if (marca !== "" && elencoMarche.indexOf(marca) === -1) {
+                        elencoMarche.push(marca);
+                        htmlBottoni += "<div class='card' onclick=\"mostraProdotti('" + marca.replace(/'/g, "\\'") + "')\" style='cursor: pointer; padding: 20px; margin: 10px; border: 2px solid #0369a1; border-radius:10px; text-align:center; min-width:150px;'>";
+                        htmlBottoni += "<h3>" + marca.toUpperCase() + "</h3>";
+                        htmlBottoni += "</div>";
+                    }
+                }
+            }
+            document.getElementById("contenitore-marche").innerHTML = htmlBottoni;
+        }
+
+        function mostraProdotti(marcaScelta) {
+            var righe = datiSalvati.split("\n");
+            var contenitore = document.getElementById("vetrina");
+            var titolo = document.getElementById("titolo-marca");
+            
+            contenitore.innerHTML = ""; 
+            titolo.innerHTML = "Prodotti " + marcaScelta;
+
+            for (var i = 1; i < righe.length; i++) {
+                if (righe[i].trim() !== "") {
+                    var col = righe[i].split(separatore);
+                    if (col[idxMarca] && col[idxMarca].toLowerCase().trim() === marcaScelta.toLowerCase().trim()) {
+                        
+                        var nomeImg = col[idxImmagine] ? col[idxImmagine].trim() : "";
+                        if (nomeImg === "") { nomeImg = "default.png"; }
+
+                        var prezzoPuro = col[idxPrezzo] ? col[idxPrezzo].replace("€", "").trim() : "0";
+
+                        var quadratino = "<div class='card' style='border: 2px solid #0369a1; margin: 10px; padding: 15px; border-radius: 10px; width: 250px; text-align: center;'>";
+                        quadratino += "<img src='img/" + nomeImg + "' style='max-width:100%; height:150px; object-fit:contain;' onerror=\"this.src='https://placehold.co/150?text=Prodotto'\">";
+                        quadratino += "<h3>" + col[idxMarca] + " " + col[idxModello] + "</h3>";
+                        quadratino += "<p class='prezzo'>" + prezzoPuro + " €</p>";
+                        
+                        // CORREZIONE: Ora ci sono entrambi i bottoni collegati correttamente alle funzioni universali
+                        quadratino += "<button onclick='vaiDettagli(" + i + ")' style='margin-bottom:5px; width:90%;'>Vedi Dettagli</button>";
+                        quadratino += "<button onclick='aggiungiAlCarrelloDiretto(" + i + ")' style='background-color:#16a34a; width:90%;'>Aggiungi al Carrello</button>";
+                        
+                        quadratino += "</div>";
+                        contenitore.innerHTML += quadratino;
+                    }
+                }
+            }
+            document.getElementById("sezione-scelta").style.display = "none";
+            document.getElementById("sezione-vetrina").style.display = "block";
+        }
+
+        function vaiDettagli(indice) {
+            localStorage.setItem("prodotto_selezionato", indice);
+            window.location.href = "dettagli.html";
+        }
+
+        // AGGIUNTA AGGIORNATA: Questa funzione ora inserisce il prodotto legandolo al file CSV corrente
+        function aggiungiAlCarrelloDiretto(indice) {
+            var carrello = localStorage.getItem("lista_carrello");
+            var elementoDaAggiungere = nomeFile + ":" + indice;
+
+            if (carrello) { 
+                carrello = carrello.trim(); 
+            }
+            
+            if (!carrello || carrello === "") {
+                carrello = elementoDaAggiungere;
+            } else {
+                carrello = carrello + "|" + elementoDaAggiungere;
+            }
+            
+            localStorage.setItem("lista_carrello", carrello);
+            alert("Aggiunto al carrello multi-negozio!");
+        }
+
+        // INTEGRATION: Inizializzazione mappa (Via Roma 10, Lainate)
+        const myLat = 45.57143;
+        const myLng = 9.02572;
+
+        var map = L.map('map', {
+            scrollWheelZoom: true
+        }).setView([myLat, myLng], 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        L.marker([myLat, myLng]).addTo(map)
+            .bindPopup('<b>Media Tony</b><br>Via Roma 10, Lainate<br>Sede Operativa e Amministrativa <br>sede principale')
+            .openPopup();
+
+        document.getElementById('tendina-mappa').addEventListener('toggle', function() {
+            if (this.open) {
+                setTimeout(function() {
+                    map.invalidateSize();
+                }, 100);
+            }
+        });
+    </script>
+</body>
+</html>
