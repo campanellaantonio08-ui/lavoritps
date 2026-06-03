@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Configurazione - Media Tony</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Pannello di Configurazione</h1>
+    
+    <div class="form-container" style="text-align: center; max-width: 500px; margin: 20px auto; padding: 20px; border: 2px dashed #0369a1;">
+        <h3>1. Scarica i file CSV di esempio</h3>
+        <p>Clicca sui bottoni per scaricare i file sul tuo PC (salvali nella stessa cartella del sito):</p>
+        <button onclick="scaricaCSV('tecnologia')" style="background-color: #0ea5e9; margin: 5px; font-size: 10pt;">Scarica prodotti.csv</button>
+        <button onclick="scaricaCSV('automobili')" style="background-color: #0ea5e9; margin: 5px; font-size: 10pt;">Scarica automobili.csv</button>
+        <button onclick="scaricaCSV('scarpe')" style="background-color: #0ea5e9; margin: 5px; font-size: 10pt;">Scarica scarpe.csv</button>
+    </div>
+
+    <div class="form-container" style="text-align: center; max-width: 500px; margin: 20px auto; padding: 20px;">
+        <h3>2. Carica il file nel negozio</h3>
+        <p>Seleziona il file CSV dal tuo computer:</p>
+        <input type="file" id="input-file-sfoglia" accept=".csv" style="width: 90%; padding: 10px; margin-bottom: 20px; border: 2px solid #0369a1; border-radius: 10px; background: white; cursor: pointer;">
+        <br>
+        <button onclick="salvaConfigurazione()" style="background-color: #16a34a; font-size: 12pt;">Avvia Negozio</button>
+    </div>
+
+    <script>
+        function scaricaCSV(tipo) {
+            var testoCSV = "";
+            var nomeFile = "";
+
+            if (tipo === "tecnologia") {
+                nomeFile = "prodotti.csv";
+                testoCSV = "Marca,Modello,Descrizione,Immagine,Prezzo\n" +
+                           "Apple,iPhone 15,Smartphone Apple di ultima generazione.,iphone15.png,950\n" +
+                           "Samsung,Galaxy S24,Top di gamma Samsung.,s24.png,890\n" +
+                           "Apple,iPad Air,Tablet potente e leggero.,ipad.png,690\n" +
+                           "Samsung,Galaxy Watch 6,Smartwatch ideale per lo sport.,watch6.png,250";
+            } 
+            else if (tipo === "automobili") {
+                nomeFile = "automobili.csv";
+                testoCSV = "Marca,Modello,Descrizione,Immagine,Prezzo,Alimentazione,Cavalli\n" +
+                           "Fiat,500 Hybrid,Ideale per la citta e dai consumi ridotti.,fiat_500.png,16500,Ibrida,70 CV\n" +
+                           "Alfa Romeo,Tonale,SUV dal design sportivo.,alfa_tonale.png,36000,Ibrida,130 CV\n" +
+                           "Jeep,Avenger,Il nuovo SUV compatto e moderno.,jeep_avenger.png,24500,Benzina,100 CV\n" +
+                           "Toyota,Yaris,La regina dell ibrido automatica.,toyota_yaris.png,22000,Ibrida,116 CV";
+            } 
+            else if (tipo === "scarpe") {
+                nomeFile = "scarpe.csv";
+                testoCSV = "Marca,Modello,Descrizione,Immagine,Prezzo,Colore,Taglia\n" +
+                           "Nike,Air Max 90,Iconica scarpa sportiva.,nike_airmax.png,150,Bianco/Nero,42\n" +
+                           "Adidas,Stan Smith,Il grande classico del brand.,adidas_stan.png,110,Bianco/Verde,41\n" +
+                           "Jordan,Air Jordan 1 Mid,Le leggendarie sneaker alte.,jordan_aj1.png,140,Rosso/Nero,42.5";
+            }
+
+            var elementoAncoraggio = document.createElement('a');
+            elementoAncoraggio.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(testoCSV);
+            elementoAncoraggio.target = '_blank';
+            elementoAncoraggio.download = nomeFile;
+            
+            document.body.appendChild(elementoAncoraggio);
+            elementoAncoraggio.click();
+            document.body.removeChild(elementoAncoraggio);
+        }
+
+        function salvaConfigurazione() {
+            var inputDati = document.getElementById("input-file-sfoglia");
+            
+            if (inputDati.files.length === 0) {
+                alert("Per favore, seleziona un file CSV prima di continuare!");
+                return;
+            }A
+            
+            var nomeFile = inputDati.files[0].name;
+            
+            // CORREZIONE CRUCIALE: Salviamo il vecchio carrello prima di pulire, così non lo perdiamo!
+            var vecchioCarrello = localStorage.getItem("lista_carrello");
+            
+            localStorage.clear(); // Pulisce i vecchi file caricati
+            localStorage.setItem("nome_file_csv", nomeFile);
+            
+            // Se c'erano già prodotti nel carrello, li rimettiamo dentro al sicuro!
+            if (vecchioCarrello) {AV
+                localStorage.setItem("lista_carrello", vecchioCarrello);
+            }
+            
+            alert("Negozio configurato con il file: " + nomeFile);
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>
