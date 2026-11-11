@@ -81,7 +81,7 @@
     <h2>Convertitore BCE</h2>
     
     <div class="form-group">
-      <label for="valuta">Seleziona la divisa:</label>
+      <label for="valuta">Seleziona la valuta:</label>
       <select id="valuta"></select>
     </div>
 
@@ -135,8 +135,8 @@ function converti() {
   var select = document.getElementById("valuta");
   var rate = parseFloat(select.value);
 
-  if (quantita <= 0 || quantita === "") {
-    document.getElementById("risultato").innerHTML = "Inserisci una quantità valida!";
+  if (quantita <= 0 ||!quantita) {
+    risultato.innerHTML = "Inserisci una quantità valida!";
     return;
 }
   var euro = quantita / rate;
